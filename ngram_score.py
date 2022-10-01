@@ -12,8 +12,18 @@ class ngram_score(object):
         for line in open(ngramfile):
             key,count = line.split(sep) 
             self.ngrams[key] = int(count)
+
         self.L = len(key)
-        self.N = sum(self.ngrams.itervalues())
+        self.N = sum(self.ngrams.values())
+        # self.N = sum(iter(self.ngrams.values()))
+
+        """
+        In Python 3, direct iteration over mappings works the same way as it does in Python 2.
+        There are no method based equivalents
+        - the semantic equivalents of d.itervalues() and d.iteritems() in Python 3
+        are iter(d.values()) and iter(d.items()).
+        """
+
         #calculate log probabilities
         for key in self.ngrams.keys():
             self.ngrams[key] = log10(float(self.ngrams[key])/self.N)
