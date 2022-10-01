@@ -17,6 +17,7 @@ class ngram_score(object):
         self.N = sum(self.ngrams.values())
         # self.N = sum(iter(self.ngrams.values()))
 
+        # self.N = sum(self.ngrams.itervalues())
         """
         In Python 3, direct iteration over mappings works the same way as it does in Python 2.
         There are no method based equivalents
