@@ -62,6 +62,43 @@ def playfairEncrypt(ptext, keyMatrix):
     return result
 
 
+def playfairDecryptBigram(ptext, keyMatrix):
+    np_keyMatrix = np.array(keyMatrix)
+    np_char1 = np.array(ptext[0])
+    np_char2 = np.array(ptext[1])
+
+    result1 = ""
+    result2 = ""
+
+    char1_loc = np.argwhere(np_keyMatrix == np_char1)[0]
+    char2_loc = np.argwhere(np_keyMatrix == np_char2)[0]
+
+    # if in same col
+    if char1_loc[1] == char2_loc[1]:
+        result1 = keyMatrix[(char1_loc[0] - 1) % 5][char1_loc[1]]
+        result2 = keyMatrix[(char2_loc[0] - 1) % 5][char1_loc[1]]
+
+    # if in same row
+    elif char1_loc[0] == char2_loc[0]:
+        result1 = keyMatrix[char1_loc[0]][(char1_loc[1] - 1) % 5]
+        result2 = keyMatrix[char1_loc[0]][(char2_loc[1] - 1) % 5]
+
+    else:
+        result1 = keyMatrix[char1_loc[0]][char2_loc[1]]
+        result2 = keyMatrix[char2_loc[0]][char1_loc[1]]
+
+    return result1 + result2
+
+
+def playfairDecrypt(ptext, keyMatrix):
+    ptext = ptext.replace(" ", "").upper()
+
+    result = ""
+    for i in range(0, len(ptext) - 1, 2):
+        result += playfairDecryptBigram(ptext[i] + ptext[i + 1], keyMatrix)
+
+    return result
+
 def generateKeyMatrix(key):
     key = key.replace(" ", "")
     key = key.upper()
@@ -79,9 +116,18 @@ def generateKeyMatrix(key):
     return keyMatrix
 
 
+
+
+
+
+
+
+
+
 keyMatrix = generateKeyMatrix(key2)
 
-print(playfairEncrypt(ptext10, keyMatrix))
+# print(playfairEncrypt(ptext10, keyMatrix))
+print(playfairDecrypt(ctext10, keyMatrix))
 
 # print(playfairEncryptBigram("HI", keyMatrix))
 # playfairEncryptBigram("DE", keyMatrix)
