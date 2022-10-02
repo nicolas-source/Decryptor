@@ -30,6 +30,7 @@ COUNT = 10000
 SEED = 1
 random.seed(SEED)
 
+
 def playfairEncryptBigram(ptext, keyMatrix):
     np_keyMatrix = np.array(keyMatrix)
     np_char1 = np.array(ptext[0])
@@ -128,7 +129,7 @@ def generateKeyMatrix(key):
 
 keyMatrix = generateKeyMatrix(key2)
 
-print(playfairDecrypt(ctext10, keyMatrix))
+# print(playfairDecrypt(ctext10, keyMatrix))
 
 bigrams = "./english_bigrams.txt"
 trigrams = "./english_trigrams.txt"
@@ -147,8 +148,42 @@ quadgram_score = quadgramScorer.score(sampleText1)
 
 
 def swapRows(keyMatrix):
-    firstSwap = random.randint(0,4)
-    secondSwap = random.randint(0,4)
+    firstSwap = random.randint(0, 4)
+    secondSwap = random.randint(0, 4)
+    tempSwap = np.copy(keyMatrix[firstSwap, :])
+    keyMatrix[firstSwap, :] = np.copy(keyMatrix[secondSwap, :])
+    keyMatrix[secondSwap, :] = np.copy(tempSwap)
+
+    return keyMatrix
+
+
+def swapCols(keyMatrix):
+    firstSwap = random.randint(0, 4)
+    secondSwap = random.randint(0, 4)
+    tempSwap = np.copy(keyMatrix[:, firstSwap])
+    keyMatrix[:, firstSwap] = np.copy(keyMatrix[:, secondSwap])
+    keyMatrix[:, secondSwap] = np.copy(tempSwap)
+
+    return keyMatrix
+
+
+def swapLetters(keyMatrix):
+    firstSwap = [random.randint(0, 4), random.randint(0, 4)]
+    secondSwap = [random.randint(0, 4), random.randint(0, 4)]
+    tempSwap = np.copy(keyMatrix[firstSwap[0]][firstSwap[1]])
+    keyMatrix[firstSwap[0]][firstSwap[1]] = np.copy(keyMatrix[secondSwap[0]][secondSwap[1]])
+    keyMatrix[secondSwap[0]][secondSwap[1]] = np.copy(tempSwap)
+
+    return keyMatrix
+
+
+# Debug
+# keyMatrix = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [2, 2, 2, 2, 2], [0, 0, 0, 0, 0]]
+# keyMatrix = [[0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4]]
+# keyMatrix = [[0, 1, 2, 3, 4], [10, 11, 12, 13, 14], [20, 21, 22, 23, 24], [30, 31, 32, 33, 34], [40, 41, 42, 43, 44]]
+# keyMatrix = np.array(keyMatrix)
+#
+# print(swapLetters(keyMatrix))
 
 
 def breakPlayfair():
