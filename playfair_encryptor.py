@@ -1,5 +1,9 @@
 # cite: https://dev.to/karanmunjani/encryption-using-playfair-cipher-in-python-24l4
+import math
+import random
+
 import numpy as np
+from ngram_score import ngram_score
 
 key1 = "monarchybdefgiklpqstuvwxz"
 key2 = "playfirexmbcdghknoqstuvwz"
@@ -20,6 +24,11 @@ ptext10 = "hide the gold in the trexe stump"
 
 ctext10 = "BMODZ BXDNA BEKUD MUIXM MOUVI F"
 
+TEMP = 20
+STEP = 0.2
+COUNT = 10000
+SEED = 1
+random.seed(SEED)
 
 def playfairEncryptBigram(ptext, keyMatrix):
     np_keyMatrix = np.array(keyMatrix)
@@ -99,6 +108,7 @@ def playfairDecrypt(ptext, keyMatrix):
 
     return result
 
+
 def generateKeyMatrix(key):
     key = key.replace(" ", "")
     key = key.upper()
@@ -116,19 +126,51 @@ def generateKeyMatrix(key):
     return keyMatrix
 
 
-
-
-
-
-
-
-
-
 keyMatrix = generateKeyMatrix(key2)
 
-# print(playfairEncrypt(ptext10, keyMatrix))
 print(playfairDecrypt(ctext10, keyMatrix))
 
-# print(playfairEncryptBigram("HI", keyMatrix))
-# playfairEncryptBigram("DE", keyMatrix)
-# playfairEncryptBigram("TH", keyMatrix)
+bigrams = "./english_bigrams.txt"
+trigrams = "./english_trigrams.txt"
+quadgrams = "./english_quadgrams.txt"
+
+bigramScorer = ngram_score(bigrams)
+trigramScorer = ngram_score(trigrams)
+quadgramScorer = ngram_score(quadgrams)
+
+sampleText1 = "ATTACK THE EAST WALL OF THE CASTLE AT DAWN"
+sampleText2 = "FYYFHP YMJ JFXY BFQQ TK YMJ HFXYQJ FY IFBS"
+
+bigram_score = bigramScorer.score(sampleText1)
+trigram_score = trigramScorer.score(sampleText1)
+quadgram_score = quadgramScorer.score(sampleText1)
+
+
+def swapRows(keyMatrix):
+    firstSwap = random.randint(0,4)
+    secondSwap = random.randint(0,4)
+
+
+def breakPlayfair():
+    bestScoreLocal = quadgramScorer.score(ctext10)
+    bestScoreGlobal = bestScoreLocal
+
+    bestKeyLocal = "ABCDEFGHIJKLMNOPQRSTUVWXY"
+    bestKeyGlobal = bestKeyLocal
+
+    ciphertext = ctext10
+
+    keyMatrix
+    for T in range(0, TEMP):
+        for C in range(0, COUNT):
+            deciphered = playfairDecrypt(ciphertext, keyMatrix)
+            score = quadgramScorer.score(deciphered)
+            dF = score - bestScoreLocal
+
+            if dF >= 0:
+                bestScoreLocal = score
+            elif T > 0:
+                prob = math.exp(dF / T)
+
+            if bestScoreLocal > bestScoreGlobal:
+                bestScoreGlobal = bestScoreLocal
