@@ -73,15 +73,14 @@ def playfairEncrypt(ptext, keyMatrix):
 
 
 def playfairDecryptBigram(ptext, keyMatrix):
-    np_keyMatrix = np.array(keyMatrix)
     np_char1 = np.array(ptext[0])
     np_char2 = np.array(ptext[1])
 
     result1 = ""
     result2 = ""
 
-    char1_loc = np.argwhere(np_keyMatrix == np_char1)[0]
-    char2_loc = np.argwhere(np_keyMatrix == np_char2)[0]
+    char1_loc = np.argwhere(keyMatrix == np_char1)[0]
+    char2_loc = np.argwhere(keyMatrix == np_char2)[0]
 
     # if in same col
     if char1_loc[1] == char2_loc[1]:
@@ -100,20 +99,11 @@ def playfairDecryptBigram(ptext, keyMatrix):
     return result1 + result2
 
 
-def playfairDecrypt(ptext, keyMatrix):
-    ptext = ptext.replace(" ", "").upper()
-
-    result = ""
-    for i in range(0, len(ptext) - 1, 2):
-        result += playfairDecryptBigram(ptext[i] + ptext[i + 1], keyMatrix)
-
-    return result
-
-
 def generateKeyMatrix(key):
     key = key.replace(" ", "")
     key = key.upper()
-    keyMatrix = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+    keyMatrix = np.array(
+        [["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"]])
     j = 0
     k = 0
     for i in range(0, len(key)):
@@ -127,7 +117,23 @@ def generateKeyMatrix(key):
     return keyMatrix
 
 
-keyMatrix = generateKeyMatrix(key2)
+def playfairDecrypt(ctext, keyMatrix):
+    ctext = ctext.replace(" ", "").upper()
+
+    result = ""
+    for i in range(0, len(ctext) - 1, 2):
+        result += playfairDecryptBigram(ctext[i] + ctext[i + 1], keyMatrix)
+
+    return result
+
+
+# bestKeyLocal = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+#
+# keyMatrix = generateKeyMatrix(bestKeyLocal)
+
+# print(playfairDecrypt(ctext10, keyMatrix))
+
+# keyMatrix = generateKeyMatrix(key2)
 
 # print(playfairDecrypt(ctext10, keyMatrix))
 
@@ -185,27 +191,63 @@ def swapLetters(keyMatrix):
 #
 # print(swapLetters(keyMatrix))
 
+def randomKeySwap(keyMatrix):
+    rand = random.randint(2, 3)
+    if rand == 0:
+        return swapRows(keyMatrix)
+    if rand == 1:
+        return swapCols(keyMatrix)
+    if rand == 2:
+        return swapLetters(keyMatrix)
+    if rand == 3:
+        return swapLetters(keyMatrix)
+
 
 def breakPlayfair():
     bestScoreLocal = quadgramScorer.score(ctext10)
     bestScoreGlobal = bestScoreLocal
 
-    bestKeyLocal = "ABCDEFGHIJKLMNOPQRSTUVWXY"
+    bestKeyLocal = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
     bestKeyGlobal = bestKeyLocal
+
+
+
+    keyMatrix = generateKeyMatrix(bestKeyLocal)
 
     ciphertext = ctext10
 
-    keyMatrix
+    bestDecipherLocal = playfairDecrypt(ciphertext, keyMatrix)
+
+
+    score = quadgramScorer.score(bestDecipherLocal)
+
     for T in range(0, TEMP):
         for C in range(0, COUNT):
-            deciphered = playfairDecrypt(ciphertext, keyMatrix)
-            score = quadgramScorer.score(deciphered)
-            dF = score - bestScoreLocal
 
-            if dF >= 0:
+            bestKeyLocal = randomKeySwap(keyMatrix)
+            bestDecipherLocal = playfairDecrypt(ciphertext, bestKeyLocal)
+            score = quadgramScorer.score(bestDecipherLocal)
+            scoreDiff = score - bestScoreLocal
+
+            if scoreDiff >= 0:
                 bestScoreLocal = score
+                bestKeyGlobal = bestKeyLocal
+
             elif T > 0:
-                prob = math.exp(dF / T)
+                prob = math.exp(scoreDiff / T)
+                if prob > 0.20:
+                    bestScoreLocal = score
+                    bestKeyGlobal = bestKeyLocal
 
             if bestScoreLocal > bestScoreGlobal:
                 bestScoreGlobal = bestScoreLocal
+                bestKeyGlobal = bestKeyLocal
+
+        print(T)
+        print(bestKeyLocal)
+        print(bestScoreLocal)
+        print()
+
+    return bestScoreGlobal, bestKeyGlobal
+
+print(breakPlayfair())
