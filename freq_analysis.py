@@ -23,7 +23,7 @@ class bigram_freq(object):
     def getTop100Freq(self):
         return dict(list(self.bigram_freq.items())[:100])
 
-    def freqAnalyzeText(self, text):
+    def freqAnalyzeTextCount(self, text):
         text = text.replace(' ', '').upper()
         bigram_freq_dict = {}
 
@@ -39,6 +39,23 @@ class bigram_freq(object):
 
         return bigram_freq_dict
 
+    def freqAnalyzeTextPercentage(self, text):
+        text = text.replace(' ', '').upper()
+        bigram_freq_dict = {}
 
 
+        for i in range(0, len(text), 2):
+            text_bigram = text[i] + text[i + 1]
 
+            if text_bigram in bigram_freq_dict:
+                bigram_freq_dict[text_bigram] += 1
+            else:
+                bigram_freq_dict[text_bigram] = 1
+
+        N = sum(bigram_freq_dict.values())
+        bigram_freq_dict = dict(sorted(bigram_freq_dict.items(), key=lambda item: item[1], reverse=True))
+
+        for key in bigram_freq_dict.keys():
+            bigram_freq_dict[key] = float(bigram_freq_dict[key]/N)
+
+        return bigram_freq_dict

@@ -131,24 +131,6 @@ def playfairDecrypt(ctext, keyMatrix):
     return result
 
 
-bigrams = "./english_bigrams.txt"
-trigrams = "./english_trigrams.txt"
-quadgrams = "./english_quadgrams.txt"
-
-bigramScorer = ngram_score(bigrams)
-trigramScorer = ngram_score(trigrams)
-quadgramScorer = ngram_score(quadgrams)
-
-
-
-
-bigram = bigram_freq()
-bigram.compute_bigram_freq()
-
-print(bigram.getTop100Freq())
-print(bigram.freqAnalyzeText(ctext0))
-
-
 def swapRows(keyMatrix):
     firstSwap = random.randint(0, 4)
     secondSwap = random.randint(0, 4)
@@ -197,6 +179,9 @@ def randomKeySwap(keyMatrix):
         return swapLetters(keyMatrix)
     if rand == 3:
         return swapLetters(keyMatrix)
+
+def intentionalKeySwap(keyMatrix):
+
 
 
 def breakPlayfair():
@@ -251,3 +236,18 @@ def breakPlayfair():
 
 
 # print(breakPlayfair())
+
+bigrams = "./english_bigrams.txt"
+trigrams = "./english_trigrams.txt"
+quadgrams = "./english_quadgrams.txt"
+
+bigramScorer = ngram_score(bigrams)
+trigramScorer = ngram_score(trigrams)
+quadgramScorer = ngram_score(quadgrams)
+
+bigram = bigram_freq()
+bigram.compute_bigram_freq()
+
+print(bigram.getTop100Freq())
+# print(bigram.freqAnalyzeTextCount(ctext0))
+print(bigram.freqAnalyzeTextPercentage(ctext0))
