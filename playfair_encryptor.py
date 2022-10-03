@@ -103,7 +103,8 @@ def generateKeyMatrix(key):
     key = key.replace(" ", "")
     key = key.upper()
     keyMatrix = np.array(
-        [["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"],["z", "z", "z", "z", "z"]])
+        [["z", "z", "z", "z", "z"], ["z", "z", "z", "z", "z"], ["z", "z", "z", "z", "z"], ["z", "z", "z", "z", "z"],
+         ["z", "z", "z", "z", "z"]])
     j = 0
     k = 0
     for i in range(0, len(key)):
@@ -210,14 +211,11 @@ def breakPlayfair():
     bestKeyLocal = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
     bestKeyGlobal = bestKeyLocal
 
-
-
     keyMatrix = generateKeyMatrix(bestKeyLocal)
 
     ciphertext = ctext10
 
     bestDecipherLocal = playfairDecrypt(ciphertext, keyMatrix)
-
 
     score = quadgramScorer.score(bestDecipherLocal)
 
@@ -249,5 +247,6 @@ def breakPlayfair():
         print()
 
     return bestScoreGlobal, bestKeyGlobal
+
 
 print(breakPlayfair())
