@@ -10,8 +10,8 @@ bigramScorer = ngram_score(bigrams)
 trigramScorer = ngram_score(trigrams)
 quadgramScorer = ngram_score(quadgrams)
 
-sampleText1 = "ATTACK THE EAST WALL OF THE CASTLE AT DAWN"
-sampleText2 = "FYYFHP YMJ JFXY BFQQ TK YMJ HFXYQJ FY IFBS"
+sampleText1 = "HIDE THE GOLD IN THE TREE STUMP"
+sampleText2 = "BMODZ BXDNA BEKUD MUIXM MOUVI F"
 
 bigram_score = bigramScorer.score(sampleText1)
 trigram_score = trigramScorer.score(sampleText1)

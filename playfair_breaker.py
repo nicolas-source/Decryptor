@@ -4,6 +4,7 @@ import random
 
 import numpy as np
 from ngram_score import ngram_score
+from freq_analysis import bigram_freq
 
 key1 = "monarchybdefgiklpqstuvwxz"
 key2 = "playfirexmbcdghknoqstuvwz"
@@ -138,12 +139,14 @@ bigramScorer = ngram_score(bigrams)
 trigramScorer = ngram_score(trigrams)
 quadgramScorer = ngram_score(quadgrams)
 
-sampleText1 = "ATTACK THE EAST WALL OF THE CASTLE AT DAWN"
-sampleText2 = "FYYFHP YMJ JFXY BFQQ TK YMJ HFXYQJ FY IFBS"
 
-bigram_score = bigramScorer.score(sampleText1)
-trigram_score = trigramScorer.score(sampleText1)
-quadgram_score = quadgramScorer.score(sampleText1)
+
+
+bigram = bigram_freq()
+bigram.compute_bigram_freq()
+
+print(bigram.getTop100Freq())
+print(bigram.freqAnalyzeText(ctext0))
 
 
 def swapRows(keyMatrix):
@@ -205,7 +208,7 @@ def breakPlayfair():
 
     keyMatrix = generateKeyMatrix(bestKeyLocal)
 
-    ciphertext = ctext10
+    ciphertext = ctext0
 
     bestDecipherLocal = playfairDecrypt(ciphertext, keyMatrix)
     bestDecipherGlobal = bestDecipherLocal
@@ -247,4 +250,4 @@ def breakPlayfair():
     return bestScoreGlobal, bestKeyGlobal, bestDecipherGlobal
 
 
-print(breakPlayfair())
+# print(breakPlayfair())
