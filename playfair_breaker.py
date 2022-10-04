@@ -189,50 +189,6 @@ def keySwap(keyMatrix):
     else:
         return swapLetters(keyMatrix)
 
-    # if choice == 4:
-    #     return swapLetters_freqency(keyMatrix)
-
-
-# Didn't work
-triedIndices = []
-
-
-def swapLetters_freqency(keyMatrix):
-    # strat: always swap with 'Z'
-    index_z = np.where(keyMatrix == 'Z')
-
-    letter_a = 'T'
-    letter_b = 'H'
-    index_a = np.where(keyMatrix == letter_a)
-    index_b = np.where(keyMatrix == letter_b)
-
-    # put first char at first target
-    # replace first char original spot with Z
-
-    for i in range(0, 4):
-        for j in range(0, 4):
-            for ii in range(0, 4):
-                for jj in range(0, 4):
-                    if index_a == [i, j] or index_b == [ii, jj] or [i, j] == [ii, jj] or [[i, j],
-                                                                                          [ii, jj]] in triedIndices:
-                        break
-                    else:
-                        index_a = np.where(keyMatrix == letter_a)
-                        index_b = np.where(keyMatrix == letter_b)
-
-                        tempLetter = keyMatrix[i, j]
-                        keyMatrix[i, j] = letter_a
-                        keyMatrix[index_a] = tempLetter
-
-                        tempLetter = keyMatrix[ii, jj]
-                        keyMatrix[ii, jj] = letter_b
-                        keyMatrix[index_b] = tempLetter
-
-                        triedIndices.append([[i, j], [ii, jj]])
-                        return keyMatrix
-
-    return generateKeyMatrix("ABCDEFGHIKLMNOPQRSTUVWXYZ")
-
 
 def breakPlayfair():
     bestScoreLocal = quadgramScorer.score(ctext10)
