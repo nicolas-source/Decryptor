@@ -9,6 +9,7 @@ from freq_analysis import bigram_freq
 key1 = "monarchybdefgiklpqstuvwxz"
 key2 = "playfirexmbcdghknoqstuvwz"
 
+ptext0 = "Certainlycommaansweredthescarecrowdothowdoyoudoimpretxtywelxlcommathankyoucomxmarepliedxdorothypolitelydothowdoyoudoimnotfexelingwellcommasaidthescarecrowcomxmawithasmilecomxmaforitisverytediousbeingperchedupherenightanddaytoscareawaycrowsdotcantyougetdownaskedxdorothydotnocomxmaforthispoleisxstuckupmybackdotifyouwillpleasetakeawaythepoleishalxlbegreatlyobligedtoyoudotdorothyreachedupbotharmsandliftedthefigureofxfthepolecomxmaforcommabeingstufxfedwithstrawcomxmaitwasquitelightdotthankyouverymuchcomxmasaidthescarecrowcomxmawhenhehadbexensetdownonthegrounddotifeellikeanewmandotdorothywaspuzxzledatthiscomxmaforitsoundedquexertohearastufxfedmanspeakcommaandtosexehimbowandwalkalongbesideherdotwhoareyouaskedthescarecrowxwhenhehadstretchedhimselfandyawneddotandwhereareyougoingmynameisdorothycommasaidthegirlcommaandiamgoingtotheemeraldcitycommatoaskthegreatoztosendmebacktokansasdotwhereistheemeraldcityheinquiredxdotandwhoisozwhycomxmadontyouknowshereturnedcomxmainsurprisedotnocommaindeeddotidontknowanythingdotyouseecommaiamstufxfedcommasoihavenobrainsatalxlcommaheansweredsadlydotohcomxmasaiddorothycommaimawfulxlysorxryforyoudotdoyouthinkcommaheaskedcommaifigototheemeraldcitywithyoucomxmathatozwouldgivemesomebrainsicanxnotxtelxlcommashereturnedcommabutyoumaycomewithmecommaifyoulikedotifozwilxlnotgiveyouanybrainsyouwillbenoworseoffthanyouarenowdotxthatistruecomxmasaidthescarecrowdotyouseecommahecontinuedconfidentialxlycomxmaidontmindmylegsandarmsandbodybeingstuffedcommabecauseicanxnotgethurtdotifanyonetreadsonmytoesorsticksapinintomecommaitdoesntmatxtercommaforicantfeelitdotbutidonotwantpeopletocalxlmeafoolcomxmaandifmyheadstaysstuffedwithstrawinsteadofwithbrainscommaasyoursiscommahowamievertoknowanythingiunderstandhowyoufexelcomxmasaidthelittlegirlcommawhowastrulysorryforhimdotifyouwilxlcomewithmeilxlaskoztodoallhecanforyoudotxthankyoucomxmaheansweredgratefullydotxtheywalkedbacktotheroadxdotdorothyhelpedhimoverthefencecommaandtheystartedalongthepathofyelxlowbrickfortheemeraldcitydottotodidnotlikethisadditiontothepartyatfirstdothesmelledaroundthestuffedmanasifhesuspectedtheremightbeanestofratsinthestrawcomxmaandheoftengrowledinanunfriendlywayatthescarecrowdotdontmindtotocommasaiddorothytohernewfriendxdotheneverbitesdotohcomxmaimnotafraidcommarepliedthescarecrowdothecanthurtthestrawdotdoletmecarxrythatbasketforyoudotishallnotminditcomxmaforicantgetxtiredxdotilxltellyouasecretcommahecontinuedcommaashewalkedalongdotthereisonlyonethingintheworldiamafraidofdotwhatisthataskeddorothythemunchkinfarmerwhomadeyounocomxmaansweredthescarecrowitsalightedmatch"
 ptext1 = "ATTACK"
 ptext2 = "ATTACKATDAWN"
 ptext3 = "ATTACKATMIDNIGHT"
@@ -29,7 +30,7 @@ ctext10 = "BMODZ BXDNA BEKUD MUIXM MOUVI F"
 
 TEMP = 200
 STEP = 0.2
-COUNT = 10000
+COUNT = 300
 SEED = 1
 random.seed(SEED)
 
@@ -169,19 +170,68 @@ def swapLetters(keyMatrix):
 #
 # print(swapLetters(keyMatrix))
 
-def randomKeySwap(keyMatrix):
-    rand = random.randint(2, 3)
-    if rand == 0:
+def keySwap(keyMatrix):
+    choice = random.randint(1, 50)
+    choice = 4
+    if choice == 1:
         return swapRows(keyMatrix)
-    if rand == 1:
+    if choice == 2:
         return swapCols(keyMatrix)
-    if rand == 2:
-        return swapLetters(keyMatrix)
-    if rand == 3:
+    if choice == 3:
+        # flips vertically
+        return np.flip(keyMatrix, axis=0)
+    if choice == 4:
+        # flips horizontally
+        return np.flip(keyMatrix, axis=1)
+    if choice == 5:
+        # flips vertically and horizontally
+        return np.flip(keyMatrix)
+    else:
         return swapLetters(keyMatrix)
 
-def intentionalKeySwap(keyMatrix):
+    # if choice == 4:
+    #     return swapLetters_freqency(keyMatrix)
 
+
+# Didn't work
+triedIndices = []
+
+
+def swapLetters_freqency(keyMatrix):
+    # strat: always swap with 'Z'
+    index_z = np.where(keyMatrix == 'Z')
+
+    letter_a = 'T'
+    letter_b = 'H'
+    index_a = np.where(keyMatrix == letter_a)
+    index_b = np.where(keyMatrix == letter_b)
+
+    # put first char at first target
+    # replace first char original spot with Z
+
+    for i in range(0, 4):
+        for j in range(0, 4):
+            for ii in range(0, 4):
+                for jj in range(0, 4):
+                    if index_a == [i, j] or index_b == [ii, jj] or [i, j] == [ii, jj] or [[i, j],
+                                                                                          [ii, jj]] in triedIndices:
+                        break
+                    else:
+                        index_a = np.where(keyMatrix == letter_a)
+                        index_b = np.where(keyMatrix == letter_b)
+
+                        tempLetter = keyMatrix[i, j]
+                        keyMatrix[i, j] = letter_a
+                        keyMatrix[index_a] = tempLetter
+
+                        tempLetter = keyMatrix[ii, jj]
+                        keyMatrix[ii, jj] = letter_b
+                        keyMatrix[index_b] = tempLetter
+
+                        triedIndices.append([[i, j], [ii, jj]])
+                        return keyMatrix
+
+    return generateKeyMatrix("ABCDEFGHIKLMNOPQRSTUVWXYZ")
 
 
 def breakPlayfair():
@@ -200,12 +250,12 @@ def breakPlayfair():
 
     score = quadgramScorer.score(bestDecipherLocal)
 
-    for T in range(0, TEMP):
+    for T in range(0, 1):
         for C in range(0, COUNT):
 
-            bestKeyLocal = randomKeySwap(keyMatrix)
+            bestKeyLocal = keySwap(keyMatrix)
             bestDecipherLocal = playfairDecrypt(ciphertext, bestKeyLocal)
-            score = quadgramScorer.score(bestDecipherLocal)
+            score = quadgramScorer.score(bestDecipherLocal.replace('X', ''))
             scoreDiff = score - bestScoreLocal
 
             if scoreDiff >= 0:
@@ -213,29 +263,27 @@ def breakPlayfair():
                 bestKeyGlobal = bestKeyLocal
                 bestDecipherGlobal = bestDecipherLocal
 
-            elif T > 0:
-                prob = math.exp(scoreDiff / T)
-                if prob > 0.05:
-                    bestScoreLocal = score
-                    bestKeyGlobal = bestKeyLocal
-                    bestDecipherGlobal = bestDecipherLocal
+            # elif T > 0:
+            #     prob = math.exp(scoreDiff / T)
+            #     if prob > 0.05:
+            #         bestScoreLocal = score
+            #         bestKeyGlobal = bestKeyLocal
+            #         bestDecipherGlobal = bestDecipherLocal
 
             if bestScoreLocal > bestScoreGlobal:
                 bestScoreGlobal = bestScoreLocal
                 bestKeyGlobal = bestKeyLocal
                 bestDecipherGlobal = bestDecipherLocal
 
-        print(T)
-        print(bestKeyLocal)
-        print(bestScoreLocal)
-        print(bestDecipherLocal)
+            print(T)
+            print(bestKeyLocal)
+            print(bestScoreLocal)
+            print(bestDecipherLocal)
 
-        print()
+            print()
 
     return bestScoreGlobal, bestKeyGlobal, bestDecipherGlobal
 
-
-# print(breakPlayfair())
 
 bigrams = "./english_bigrams.txt"
 trigrams = "./english_trigrams.txt"
@@ -248,6 +296,23 @@ quadgramScorer = ngram_score(quadgrams)
 bigram = bigram_freq()
 bigram.compute_bigram_freq()
 
-print(bigram.getTop100Freq())
-# print(bigram.freqAnalyzeTextCount(ctext0))
-print(bigram.freqAnalyzeTextPercentage(ctext0))
+# print(bigram.getTop100Freq())
+# print(bigram.freqAnalyzeTextPercentage(ptext0.upper()))
+# print(bigram.freqAnalyzeTextPercentage(ctext0))
+
+key = generateKeyMatrix("ABCDEFGHIKLMNOPQRSTUVWXYZ")
+print(key)
+print(np.flip(key))
+print(np.flip(key, 0))
+print(np.flip(key, 1))
+
+# print(key)
+# loc = np.where(key == 'N')
+# print(key[loc])
+
+# triedIndices = [[[0, 0], [0, 1]], [[0, 0], [0, 2]]]
+
+# print([[0, 0], [0, 0]] in triedIndices)
+
+
+# print(breakPlayfair())
