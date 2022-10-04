@@ -184,7 +184,6 @@ def keySwapStochastic(keyMatrix):
 
 
 def breakPlayfair():
-
     startingKey = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
     ciphertext = ctext0
 
@@ -196,14 +195,16 @@ def breakPlayfair():
     SEED = 1
     random.seed(SEED)
     TEMP = 10 + 0.087 * (len(ciphertext) - 84)
+    TEMP = 15.0
     STEP = 0.2
     COUNT = 0
     MAX_COUNT = 10000
-
+    bestKeyscore = -9999999999
+    bestKey = ""
     while TEMP >= 0:
-        TEMP -= STEP
+        TEMP = TEMP - STEP
+        COUNT = 0
         while COUNT < MAX_COUNT:
-
             childKey = keySwapStochastic(parentKey)
             childDecipheredText = playfairDecrypt(ciphertext, childKey)
             childKeyScore = quadgramScorer.score(childDecipheredText.replace('X', ''))
@@ -220,32 +221,28 @@ def breakPlayfair():
                 # if the probability is greater than the random
                 # number make the child the parent;
                 # else increment the counter;
-                probability = 1 / (math.exp(scoreDiff / TEMP))
+                probability = 1 / (math.exp(-scoreDiff / TEMP))
                 if probability > random.uniform(0.0, 1.0):
                     parentKey = childKey
                 else:
                     COUNT += 1
-
+            if childKeyScore > bestKeyscore:
+                bestKeyscore = childKeyScore
+                bestKey = np.copy(childKey)
+            COUNT += 1
 
             print("TEMP: " + str(TEMP))
-            print("parentKeyScore: " + str(parentKeyScore))
+            # print("parentKeyScore: " + str(parentKeyScore))
             print("childKeyScore: " + str(childKeyScore))
-
+            print("bestKeyscore: " + str(bestKeyscore))
+            print("bestKey: " + str(bestKey))
+            print("COUNT: " + str(COUNT))
             print()
 
     return parentKey, parentKeyScore
 
 
-# bigrams = "./english_bigrams.txt"
-# trigrams = "./english_trigrams.txt"
 quadgrams = "./english_quadgrams.txt"
-#
-# bigramScorer = ngram_score(bigrams)
-# trigramScorer = ngram_score(trigrams)
 quadgramScorer = ngram_score(quadgrams)
-
-
-
-
 
 print(breakPlayfair())
