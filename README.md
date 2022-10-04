@@ -2,9 +2,5 @@
 ## Playfair breaker
 
 ### Citations
-ngram_score.py\
-english_engrams.txt\
-english_bigrams.txt\
-english_trigrams.txt\
-english_quadgrams.txt\
-http://practicalcryptography.com/cryptanalysis/text-characterisation/quadgrams/
+[1] Chris Christensen. 2022. Playfair Cryptanalysis. MAT/CSC 483 (2019)
+[2] James Lyons. Quadgram Statistics as a Fitness Measure. Retrieved October 4, 2022 from http://practicalcryptography.com/cryptanalysis/text-characterisation/quadgrams/ 
