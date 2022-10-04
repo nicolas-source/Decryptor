@@ -170,9 +170,8 @@ def swapLetters(keyMatrix):
 #
 # print(swapLetters(keyMatrix))
 
-def keySwap(keyMatrix):
+def keySwapStochastic(keyMatrix):
     choice = random.randint(1, 50)
-    choice = 4
     if choice == 1:
         return swapRows(keyMatrix)
     if choice == 2:
@@ -194,51 +193,51 @@ def breakPlayfair():
     bestScoreLocal = quadgramScorer.score(ctext10)
     bestScoreGlobal = bestScoreLocal
 
-    bestKeyLocal = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
-    bestKeyGlobal = bestKeyLocal
-
-    keyMatrix = generateKeyMatrix(bestKeyLocal)
-
+    startingKey = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
     ciphertext = ctext0
 
-    bestDecipherLocal = playfairDecrypt(ciphertext, keyMatrix)
-    bestDecipherGlobal = bestDecipherLocal
+    parentKey = generateKeyMatrix(startingKey)
 
-    score = quadgramScorer.score(bestDecipherLocal)
+    parentDecipheredText = playfairDecrypt(ciphertext, parentKey)
+    parentDecipheredText_best = parentDecipheredText
+    parentKeyScore = quadgramScorer.score(parentDecipheredText.replace('X', ''))
 
     for T in range(0, 1):
         for C in range(0, COUNT):
 
-            bestKeyLocal = keySwap(keyMatrix)
-            bestDecipherLocal = playfairDecrypt(ciphertext, bestKeyLocal)
-            score = quadgramScorer.score(bestDecipherLocal.replace('X', ''))
-            scoreDiff = score - bestScoreLocal
+            childKey = keySwapStochastic(parentKey)
+            childDecipheredText = playfairDecrypt(ciphertext, childKey)
+            childKeyScore = quadgramScorer.score(childDecipheredText.replace('X', ''))
+            scoreDiff = parentKeyScore - childKeyScore
+
+            if scoreDiff < 0:
+                parentKey = childKey
 
             if scoreDiff >= 0:
-                bestScoreLocal = score
-                bestKeyGlobal = bestKeyLocal
-                bestDecipherGlobal = bestDecipherLocal
+                bestScoreLocal = childKeyScore
+                bestKeyGlobal = childKey
+                parentDecipheredText_best = childDecipheredText
 
             # elif T > 0:
             #     prob = math.exp(scoreDiff / T)
             #     if prob > 0.05:
-            #         bestScoreLocal = score
-            #         bestKeyGlobal = bestKeyLocal
-            #         bestDecipherGlobal = bestDecipherLocal
+            #         bestScoreLocal = childKeyScore
+            #         bestKeyGlobal = childKey
+            #         parentDecipheredText_best = childDecipheredText
 
             if bestScoreLocal > bestScoreGlobal:
                 bestScoreGlobal = bestScoreLocal
-                bestKeyGlobal = bestKeyLocal
-                bestDecipherGlobal = bestDecipherLocal
+                bestKeyGlobal = childKey
+                parentDecipheredText_best = childDecipheredText
 
             print(T)
-            print(bestKeyLocal)
+            print(childKey)
             print(bestScoreLocal)
-            print(bestDecipherLocal)
+            print(childDecipheredText)
 
             print()
 
-    return bestScoreGlobal, bestKeyGlobal, bestDecipherGlobal
+    return bestScoreGlobal, bestKeyGlobal, parentDecipheredText_best
 
 
 bigrams = "./english_bigrams.txt"
