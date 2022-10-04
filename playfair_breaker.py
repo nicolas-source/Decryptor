@@ -184,8 +184,6 @@ def keySwapStochastic(keyMatrix):
 
 
 def breakPlayfair():
-    bestScoreLocal = quadgramScorer.score(ctext10)
-    bestScoreGlobal = bestScoreLocal
 
     startingKey = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
     ciphertext = ctext0
@@ -193,7 +191,6 @@ def breakPlayfair():
     parentKey = generateKeyMatrix(startingKey)
 
     parentDecipheredText = playfairDecrypt(ciphertext, parentKey)
-    parentDecipheredText_best = parentDecipheredText
     parentKeyScore = quadgramScorer.score(parentDecipheredText.replace('X', ''))
 
     SEED = 1
@@ -212,10 +209,12 @@ def breakPlayfair():
             childKeyScore = quadgramScorer.score(childDecipheredText.replace('X', ''))
             scoreDiff = parentKeyScore - childKeyScore
 
-            if scoreDiff < 0:
+            # parentKeyScore > childKeyScore
+            if scoreDiff > 0:
                 parentKey = childKey
 
-            if scoreDiff >= 0:
+            # parentKeyScore <= childKeyScore
+            if scoreDiff <= 0:
                 # calculate probability from equation;
                 # get a random number from 0 to 1;
                 # if the probability is greater than the random
@@ -227,60 +226,26 @@ def breakPlayfair():
                 else:
                     COUNT += 1
 
-                bestScoreLocal = childKeyScore
-                bestKeyGlobal = childKey
-                parentDecipheredText_best = childDecipheredText
 
-            # elif T > 0:
-            #     prob = math.exp(scoreDiff / T)
-            #     if prob > 0.05:
-            #         bestScoreLocal = childKeyScore
-            #         bestKeyGlobal = childKey
-            #         parentDecipheredText_best = childDecipheredText
-
-            if bestScoreLocal > bestScoreGlobal:
-                bestScoreGlobal = bestScoreLocal
-                bestKeyGlobal = childKey
-                parentDecipheredText_best = childDecipheredText
-
-            print(TEMP)
-            print(childKey)
-            print(bestScoreLocal)
-            print(childDecipheredText)
+            print("TEMP: " + str(TEMP))
+            print("parentKeyScore: " + str(parentKeyScore))
+            print("childKeyScore: " + str(childKeyScore))
 
             print()
 
-    return bestScoreGlobal, bestKeyGlobal, parentDecipheredText_best
+    return parentKey, parentKeyScore
 
 
-bigrams = "./english_bigrams.txt"
-trigrams = "./english_trigrams.txt"
+# bigrams = "./english_bigrams.txt"
+# trigrams = "./english_trigrams.txt"
 quadgrams = "./english_quadgrams.txt"
-
-bigramScorer = ngram_score(bigrams)
-trigramScorer = ngram_score(trigrams)
+#
+# bigramScorer = ngram_score(bigrams)
+# trigramScorer = ngram_score(trigrams)
 quadgramScorer = ngram_score(quadgrams)
 
-bigram = bigram_freq()
-bigram.compute_bigram_freq()
-
-# print(bigram.getTop100Freq())
-# print(bigram.freqAnalyzeTextPercentage(ptext0.upper()))
-# print(bigram.freqAnalyzeTextPercentage(ctext0))
-
-key = generateKeyMatrix("ABCDEFGHIKLMNOPQRSTUVWXYZ")
-print(key)
-print(np.flip(key))
-print(np.flip(key, 0))
-print(np.flip(key, 1))
-
-# print(key)
-# loc = np.where(key == 'N')
-# print(key[loc])
-
-# triedIndices = [[[0, 0], [0, 1]], [[0, 0], [0, 2]]]
-
-# print([[0, 0], [0, 0]] in triedIndices)
 
 
-# print(breakPlayfair())
+
+
+print(breakPlayfair())
