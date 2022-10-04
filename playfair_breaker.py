@@ -28,12 +28,6 @@ ptext10 = "hide the gold in the trexe stump"
 
 ctext10 = "BMODZ BXDNA BEKUD MUIXM MOUVI F"
 
-TEMP = 200
-STEP = 0.2
-COUNT = 300
-SEED = 1
-random.seed(SEED)
-
 
 def playfairEncryptBigram(ptext, keyMatrix):
     np_keyMatrix = np.array(keyMatrix)
@@ -202,8 +196,16 @@ def breakPlayfair():
     parentDecipheredText_best = parentDecipheredText
     parentKeyScore = quadgramScorer.score(parentDecipheredText.replace('X', ''))
 
-    for T in range(0, 1):
-        for C in range(0, COUNT):
+    SEED = 1
+    random.seed(SEED)
+    TEMP = 10 + 0.087 * (len(ciphertext) - 84)
+    STEP = 0.2
+    COUNT = 0
+    MAX_COUNT = 10000
+
+    while TEMP >= 0:
+        TEMP -= STEP
+        while COUNT < MAX_COUNT:
 
             childKey = keySwapStochastic(parentKey)
             childDecipheredText = playfairDecrypt(ciphertext, childKey)
@@ -214,6 +216,17 @@ def breakPlayfair():
                 parentKey = childKey
 
             if scoreDiff >= 0:
+                # calculate probability from equation;
+                # get a random number from 0 to 1;
+                # if the probability is greater than the random
+                # number make the child the parent;
+                # else increment the counter;
+                probability = 1 / (math.exp(scoreDiff / TEMP))
+                if probability > random.uniform(0.0, 1.0):
+                    parentKey = childKey
+                else:
+                    COUNT += 1
+
                 bestScoreLocal = childKeyScore
                 bestKeyGlobal = childKey
                 parentDecipheredText_best = childDecipheredText
@@ -230,7 +243,7 @@ def breakPlayfair():
                 bestKeyGlobal = childKey
                 parentDecipheredText_best = childDecipheredText
 
-            print(T)
+            print(TEMP)
             print(childKey)
             print(bestScoreLocal)
             print(childDecipheredText)
