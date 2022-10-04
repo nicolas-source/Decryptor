@@ -195,7 +195,7 @@ def breakPlayfair():
     SEED = 1
     random.seed(SEED)
     TEMP = 10 + 0.087 * (len(ciphertext) - 84)
-    TEMP = 15.0
+    TEMP = 60.0
     STEP = 0.2
     COUNT = 0
     MAX_COUNT = 10000
@@ -221,7 +221,10 @@ def breakPlayfair():
                 # if the probability is greater than the random
                 # number make the child the parent;
                 # else increment the counter;
-                probability = 1 / (math.exp(-scoreDiff / TEMP))
+                try:
+                    probability = 1 / (math.exp(-scoreDiff / TEMP))
+                except OverflowError:
+                    probability = 0
                 if probability > random.uniform(0.0, 1.0):
                     parentKey = childKey
                 else:
@@ -231,13 +234,13 @@ def breakPlayfair():
                 bestKey = np.copy(childKey)
             COUNT += 1
 
-            print("TEMP: " + str(TEMP))
-            # print("parentKeyScore: " + str(parentKeyScore))
-            print("childKeyScore: " + str(childKeyScore))
-            print("bestKeyscore: " + str(bestKeyscore))
-            print("bestKey: " + str(bestKey))
-            print("COUNT: " + str(COUNT))
-            print()
+        print("TEMP: " + str(TEMP))
+        # print("parentKeyScore: " + str(parentKeyScore))
+        print("childKeyScore: " + str(childKeyScore))
+        print("bestKeyscore: " + str(bestKeyscore))
+        print("bestKey: " + str(bestKey))
+        print("COUNT: " + str(COUNT))
+        print()
 
     return parentKey, parentKeyScore
 
