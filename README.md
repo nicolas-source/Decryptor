@@ -1,4 +1,4 @@
 # CPEN442
 
 ## Assignment 3
--- Assignment3 (folder)
+Navigate to Assignment3 (folder)
