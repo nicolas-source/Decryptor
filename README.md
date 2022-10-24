@@ -1,7 +1,10 @@
 # CPEN442
-## Playfair breaker
 
-### Citations
+## Assignment 3
+-- Assignment3 (folder)
+
+
+## Playfair breaker: Citations
 [1] Chris Christensen. 2022. Playfair Cryptanalysis. MAT/CSC 483 (2019)
 
 
