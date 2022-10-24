@@ -1,7 +1,7 @@
 class bigram_freq(object):
 
     def __init__(self):
-        bigrams_file = "./english_bigrams.txt"
+        bigrams_file = "english_bigrams.txt"
         self.sumFreq = None
         self.bigram_freq = None
         self.ngramfile = bigrams_file

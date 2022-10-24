@@ -1,4 +1,4 @@
-from ngram_score import ngram_score
+from PlayfairBreaker.ngram_score import ngram_score
 from pycipher import Vigenere
 import re
 from itertools import permutations
