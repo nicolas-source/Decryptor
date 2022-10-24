@@ -195,7 +195,7 @@ def breakPlayfair():
     SEED = 1
     random.seed(SEED)
     TEMP = 10 + 0.087 * (len(ciphertext) - 84)
-    TEMP = 60.0
+    TEMP = 30.0
     STEP = 0.2
     COUNT = 0
     MAX_COUNT = 10000
